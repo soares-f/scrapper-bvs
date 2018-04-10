@@ -1,5 +1,6 @@
 
 import psycopg2
+import pg8000
 from langdetect import detect
 import codecs
 import sys
@@ -11,6 +12,7 @@ def chunks(l, n):
 
 if __name__ == "__main__":
     n_job = sys.argv[1]
+
     banco = 'bvs'
     user  = 'postgres'
     host = 'localhost'
@@ -18,7 +20,8 @@ if __name__ == "__main__":
 
 
     diretorio = './to_align/'+str(n_job)+'/'
-    conn = psycopg2.connect('dbname={0} user={1} host={2} password={3}'.format((banco, user, host, password)))
+    #conn = psycopg2.connect('dbname=' + banco + ' user=' + user +' host=' + host + ' password=' + password)
+    conn = pg8000.connect(database=banco,user=user, password=password)
     cursor = conn.cursor()
 
     ab_lang1 = 'ab_en'
@@ -26,13 +29,13 @@ if __name__ == "__main__":
     tabela  = 'merged_all'
     lang1 = 'en'
     lang2 = 'pt'
-    sql = "SELECT _id,{0},{1} from {2}".format((ab_lang1, ab_lang2, tabela))
+    sql = "SELECT _id," + ab_lang1 + "," + ab_lang2 + "from " + tabela
 
     cursor.execute(sql)
 
     dados = cursor.fetchall()
     g = chunks(dados, 277302)
-
+    print n_job
     for item in g[int(n_job)]:
         #try:
                 if (detect(item[1].lower()) == lang1 and detect(item[2].lower()) == lang2):
