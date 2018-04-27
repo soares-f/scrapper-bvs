@@ -1,5 +1,4 @@
-
-import psycopg2
+#import psycopg2
 import pg8000
 from langdetect import detect
 import codecs
@@ -25,16 +24,16 @@ if __name__ == "__main__":
     cursor = conn.cursor()
 
     ab_lang1 = 'ab_en'
-    ab_lang2 = 'ab_pt'
+    ab_lang2 = 'ab_es'
     tabela  = 'merged_all'
     lang1 = 'en'
-    lang2 = 'pt'
-    sql = "SELECT _id," + ab_lang1 + "," + ab_lang2 + "from " + tabela
+    lang2 = 'es'
+    sql = 'SELECT id, ab_en, ab_es from merged_all where ab_en is not NULL and ab_es is not NULL and length(ab_en) > 30 and length(ab_es) > 30'
 
     cursor.execute(sql)
 
     dados = cursor.fetchall()
-    g = chunks(dados, 277302)
+    g = chunks(dados, 22070)
     print n_job
     for item in g[int(n_job)]:
         #try:
